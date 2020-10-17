@@ -1,0 +1,41 @@
+#pragma once
+#include "imports.h"
+
+typedef struct tagMOD_INFO
+{
+	PBYTE base = NULL;
+	DWORD size = NULL;
+	std::string path = "";
+} MOD_INFO, *PMOD_INFO;
+
+class Process
+{
+public:
+
+	Process(const std::string &procName);
+
+private:
+
+	BOOL isWow64;
+	DWORD pid;
+	HANDLE procHandle;
+
+	BOOL getProcessHandle(const std::string &procName);
+
+public:
+
+	DWORD		getProcessId();
+	PBYTE		getModuleBase(const std::string &modName, HMODULE hModule);
+	MOD_INFO	getModuleInfo(const std::string &modName);
+	std::string getProcessExePath();
+
+	PBYTE	alloc(PBYTE addr, SIZE_T size);
+	BOOL	free(PBYTE addr, SIZE_T size, DWORD freeType = MEM_RELEASE);
+	BOOL	protect(PBYTE addr, DWORD *protect, SIZE_T size);
+	BOOL	write(PBYTE dst, PBYTE src, SIZE_T size);
+	BOOL	read(PBYTE dst, PBYTE src, SIZE_T size);
+
+	BOOL	isValid();
+	BOOL	isWow64Process();
+
+};
