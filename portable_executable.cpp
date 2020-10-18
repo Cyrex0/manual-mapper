@@ -267,8 +267,6 @@ VOID Image::protectSections(Process &target, PBYTE base)
 
 BOOL Image::resolveStaticTLS(Process &target, PBYTE base)
 {
-	// This only handles static tls so if dll's are compiled with newer compiler versions without /Zc- flag, the process will likely crash
-
 	// Get tls data directory
 	auto tlsDir = is64bits ? nt->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_TLS] : nt32->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_TLS];
 
@@ -377,7 +375,7 @@ PBYTE Image::getData()
 	return mapped.data();
 }
 
-std::string& Image::getImageName()
+std::string Image::getImageName()
 {
 	return name;
 }

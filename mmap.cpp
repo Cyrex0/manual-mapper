@@ -4,7 +4,7 @@
 
 PBYTE mapper::manualMap(Process& target, Image& pe)
 {
-	printf_s("[<] Manual mapping %s\n", pe.getImageName().c_str());
+	printf_s("[>] Manual mapping %s\n", pe.getImageName().c_str());
 
 	// Attempt to allocate at preferred base
 	auto base = target.alloc(pe.getPreferredBase(), pe.getImageSize());
@@ -15,11 +15,11 @@ PBYTE mapper::manualMap(Process& target, Image& pe)
 		{
 			printf_s("[-] Failed to allocate memory in target process\n");
 			return nullptr;
-		}
+		}	
 	}
 	printf_s("[+] Allocated base at 0x%p\n", base);
 
-	// TLS (no support for new static/threadsafe stuff - must compile with /Zc:threadSafeInit-)
+	// TLS ( must compile with /Zc:threadSafeInit- )
 	pe.resolveStaticTLS(target, base);
 	printf_s("[+] Resolved Static TLS\n");
 
@@ -41,7 +41,7 @@ PBYTE mapper::manualMap(Process& target, Image& pe)
 
 	// Fix Protection
 	pe.protectSections(target, base);
-	printf_s("[+] Protected Sections\n");
+	printf_s("[+] Fixed protections\n");
 
 	// Write mapped image to target
 	if (!target.write(base, pe.getData(), pe.getImageSize()))
@@ -69,6 +69,15 @@ PBYTE mapper::manualMap(Process& target, Image& pe)
 		}
 	}
 	
+	// Fill in mod info struct and add to mapped module list
+	MOD_INFO mappedModule = { 0 };
+	mappedModule.base = base;
+	mappedModule.entryPoint = pe.getAddressOfEntryPoint(base);
+	mappedModule.size = pe.getImageSize();
+	mappedModule.path = pe.getImageName();
+
+	target.AddMappedModule(mappedModule);
+
 	printf_s("[+] Successfully manual mapped %s at 0x%p\n", pe.getImageName().c_str(), base);
 	return base;
 }
@@ -78,6 +87,8 @@ PBYTE mapper::manualMap(Process& target, std::filesystem::path& path)
 	Image pe(path);
 	return manualMap(target, pe);
 }
+
+// TODO: Maybe store return value of entry point to show user after execution?
 
 BOOL mapper::callEntryPoint(Process& target, PBYTE entryPoint)
 {
@@ -197,10 +208,7 @@ a:  48 ba ef be ad de ef be ad de   movabs rdx,0xdeadbeefdeadbeef
 
 BOOL mapper::callEntryPoint32(Process& target, PBYTE entryPoint)
 {
-	// Same thing as with 64 but just need different shellcode and different way to get func to hook
-
-	/*
-	
+	/*	
 0:  55                      push   ebp
 1:  89 e5                   mov    ebp,esp
 3:  b8 ef be ad de          mov    eax,0xdeadbeef

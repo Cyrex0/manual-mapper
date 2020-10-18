@@ -38,6 +38,6 @@ public:
 	PBYTE			getPreferredBase();
 	PBYTE			getAddressOfEntryPoint(PBYTE base);
 	PBYTE			getData();
-	std::string&	getImageName();
+	std::string		getImageName();
 
 };

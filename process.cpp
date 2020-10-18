@@ -62,10 +62,14 @@ DWORD Process::getProcessId()
 
 PBYTE Process::getModuleBase(const std::string& modName, HMODULE hModule)
 {
+	// Attempt to get already loaded module
 	auto base = getModuleInfo(modName).base;
 	if (base)
+	{
 		return base;
+	}
 
+	// Attempt to get modules actual name and see if loaded
 	char path[MAX_PATH];
 	if (!GetModuleFileNameA(hModule, path, MAX_PATH))
 	{
@@ -75,13 +79,22 @@ PBYTE Process::getModuleBase(const std::string& modName, HMODULE hModule)
 
 	base = getModuleInfo(dllPath.filename().string()).base;
 	if (base)
+	{
 		return base;
+	}
 
-	// TODO: Store manual mapped dll's info
+	// Check if module is already mapped and if not, map it
+	base = GetMappedModule(modName).base;
+	if (base)
+	{
+		return base;
+	}
 
 	base = mapper::manualMap(*this, dllPath);
 	if (base)
+	{
 		return base;
+	}	
 
 	return nullptr;
 }
@@ -139,7 +152,7 @@ BOOL Process::free(PBYTE addr, SIZE_T size, DWORD freeType)
 	return VirtualFreeEx(procHandle, addr, size, freeType);
 }
 
-BOOL Process::protect(PBYTE addr, DWORD *protect, SIZE_T size)
+BOOL Process::protect(PBYTE addr, PDWORD protect, SIZE_T size)
 {
 	return VirtualProtectEx(procHandle, addr, size, *protect, protect);
 }
@@ -152,6 +165,23 @@ BOOL Process::write(PBYTE dst, PBYTE src, SIZE_T size)
 BOOL Process::read(PBYTE dst, PBYTE src, SIZE_T size)
 {
 	return ReadProcessMemory(procHandle, src, dst, size, NULL);
+}
+
+VOID Process::AddMappedModule(MOD_INFO modInfo)
+{
+	modules.emplace_back(std::unique_ptr<MOD_INFO>(new MOD_INFO(modInfo)));
+}
+
+MOD_INFO Process::GetMappedModule(const std::string& name)
+{
+	for (auto &modInfo : modules)
+	{
+		if (_stricmp(name.c_str(), modInfo->path.c_str()) == 0)
+		{
+			return *modInfo;
+		}
+	}
+	return MOD_INFO();
 }
 
 BOOL Process::isValid()
