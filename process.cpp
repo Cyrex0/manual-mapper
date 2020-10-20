@@ -40,12 +40,13 @@ BOOL Process::getProcessHandle(const std::string& procName)
 
 			if (procHandle != INVALID_HANDLE_VALUE)
 			{
-				printf_s("[-] Failed to open handle to process %s [%d]\n", procName.c_str(), pid);
+				printf_s("[+] Opened handle to process %s [%d]\n", procName.c_str(), pid);
+				
 				CloseHandle(procSnap);
 				return TRUE;
 			}
 
-			printf_s("[+] Opened handle to process %s [%d]\n", procName.c_str(), pid);
+			printf_s("[-] Failed to open handle to process %s [%d]\n", procName.c_str(), pid);
 			CloseHandle(procSnap);
 			return FALSE;
 		}
@@ -186,7 +187,7 @@ MOD_INFO Process::GetMappedModule(const std::string& name)
 
 BOOL Process::isValid()
 {
-	return (procHandle == nullptr) ? FALSE : TRUE;
+	return (procHandle) ? TRUE : FALSE;
 }
 
 BOOL Process::isWow64Process()

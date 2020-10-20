@@ -211,7 +211,7 @@ VOID Image::initSecurityCookie(Process &target)
 
 	cookie = GetCurrentThreadId() ^ target.getProcessId() ^ reinterpret_cast<ULONGLONG>(&cookie);
 	cookie ^= *reinterpret_cast<ULONGLONG*>(&time);
-	cookie ^= ((ULONGLONG)(performanceCount.QuadPart) << 0x20) ^ (ULONGLONG)(performanceCount.QuadPart);
+	cookie ^= (static_cast<ULONGLONG>(performanceCount.QuadPart) << 0x20) ^ static_cast<ULONGLONG>(performanceCount.QuadPart);
 	cookie &= 0xFFFFFFFFFFFF;
 
 
@@ -305,11 +305,11 @@ BOOL Image::resolveStaticTLS(Process &target, PBYTE base)
 	// Usually would have to determine our module's TLS index, but darthton said he just uses 0 and it works so that's what I'll do
 	if (is64bits)
 	{
-		*reinterpret_cast<uint64_t*>(rebase(tls64->AddressOfIndex)) = NULL;
+		*reinterpret_cast<PULONGLONG>(rebase(tls64->AddressOfIndex)) = NULL;
 	}
 	else
 	{
-		*reinterpret_cast<uint32_t*>(rebase(tls32->AddressOfIndex)) = NULL;
+		*reinterpret_cast<PDWORD>(rebase(tls32->AddressOfIndex)) = NULL;
 	}
 
 	return TRUE;

@@ -10,8 +10,8 @@ public:
 
 private:
 
-	std::vector<uint8_t> raw;
-	std::vector<uint8_t> mapped;
+	std::vector<BYTE> raw;
+	std::vector<BYTE> mapped;
 	std::string name;
 
 	BOOL isValid = FALSE;

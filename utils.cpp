@@ -1,6 +1,6 @@
 #include "utils.h"
 
-BOOL utils::load_dll_raw(const std::filesystem::path dllPath, std::vector<uint8_t> *outVector)
+BOOL utils::load_dll_raw(const std::filesystem::path dllPath, std::vector<BYTE> *outVector)
 {
 	std::ifstream file(dllPath, std::ios::binary | std::ios::ate);
 
@@ -16,7 +16,7 @@ BOOL utils::load_dll_raw(const std::filesystem::path dllPath, std::vector<uint8_
 	outVector->resize(len);
 	
 	// read whole file into buffer
-	file.read(reinterpret_cast<PCHAR>(outVector->data()), len);
+	file.read(reinterpret_cast<char*>(outVector->data()), len);
 	file.close();
 
 	return TRUE;
