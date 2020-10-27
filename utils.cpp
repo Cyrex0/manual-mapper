@@ -1,6 +1,6 @@
 #include "utils.h"
 
-BOOL utils::load_dll_raw(const std::filesystem::path dllPath, std::vector<BYTE> *outVector)
+BOOL utils::load_dll_raw(const std::filesystem::path dllPath, std::vector<BYTE>* outVector)
 {
 	std::ifstream file(dllPath, std::ios::binary | std::ios::ate);
 
@@ -22,13 +22,13 @@ BOOL utils::load_dll_raw(const std::filesystem::path dllPath, std::vector<BYTE> 
 	return TRUE;
 }
 
-std::string utils::wide_to_mb(const std::wstring &wstr)
+std::string utils::wide_to_mb(const std::wstring& wstr)
 {
 	std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
 	return converter.to_bytes(wstr);
 }
 
-std::wstring utils::mb_to_wide(const std::string &str)
+std::wstring utils::mb_to_wide(const std::string& str)
 {
 	std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
 	return converter.from_bytes(str);

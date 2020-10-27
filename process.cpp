@@ -1,6 +1,6 @@
 #include "process.h"
 
-Process::Process(const std::string &procName)
+Process::Process(const std::string& procName)
 	:
 	isWow64(FALSE),
 	pid(0ul),
@@ -100,7 +100,7 @@ PBYTE Process::getModuleBase(const std::string& modName, HMODULE hModule)
 	return nullptr;
 }
 
-MOD_INFO Process::getModuleInfo(const std::string &modName)
+MOD_INFO Process::getModuleInfo(const std::string& modName)
 {
 	auto modSnap = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE | TH32CS_SNAPMODULE32, pid);
 	MOD_INFO modInfo = { 0 };

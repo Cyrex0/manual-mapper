@@ -77,7 +77,7 @@ VOID Image::mapImage()
 	}
 }
 
-BOOL Image::resolveImports(Process &target)
+BOOL Image::resolveImports(Process& target)
 {
 	// Get import data directory
 	auto importDir = is64bits ? nt->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT] : nt32->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT];
@@ -191,7 +191,7 @@ VOID Image::resolveRelocations(PBYTE base)
 	return;
 }
 
-VOID Image::initSecurityCookie(Process &target)
+VOID Image::initSecurityCookie(Process& target)
 {
 	// Generate a security cookie using MSVC's generation and set it in load config
 
@@ -237,7 +237,7 @@ VOID Image::initSecurityCookie(Process &target)
 	}
 }
 
-VOID Image::protectSections(Process &target, PBYTE base)
+VOID Image::protectSections(Process& target, PBYTE base)
 {
 	PIMAGE_SECTION_HEADER section = IMAGE_FIRST_SECTION(nt);
 	WORD numOfSections = nt->FileHeader.NumberOfSections;
@@ -265,7 +265,7 @@ VOID Image::protectSections(Process &target, PBYTE base)
 	}
 }
 
-BOOL Image::resolveStaticTLS(Process &target, PBYTE base)
+BOOL Image::resolveStaticTLS(Process& target, PBYTE base)
 {
 	// Get tls data directory
 	auto tlsDir = is64bits ? nt->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_TLS] : nt32->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_TLS];

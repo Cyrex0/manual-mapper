@@ -25,11 +25,11 @@ private:
 
 public:
 
-	BOOL resolveImports(Process &target);
+	BOOL resolveImports(Process& target);
 	VOID resolveRelocations(PBYTE base);
-	VOID initSecurityCookie(Process &target);
-	VOID protectSections(Process &target, PBYTE base);
-	BOOL resolveStaticTLS(Process &target, PBYTE base);
+	VOID initSecurityCookie(Process& target);
+	VOID protectSections(Process& target, PBYTE base);
+	BOOL resolveStaticTLS(Process& target, PBYTE base);
 
 	BOOL			isImageValid();
 	BOOL			isImage64bits();

@@ -15,7 +15,7 @@ class Process
 {
 public:
 
-	Process(const std::string &procName);
+	Process(const std::string& procName);
 
 private:
 
@@ -24,13 +24,13 @@ private:
 	HANDLE procHandle;
 	ModuleList modules;
 
-	BOOL getProcessHandle(const std::string &procName);
+	BOOL getProcessHandle(const std::string& procName);
 
 public:
 
 	DWORD		getProcessId();
-	PBYTE		getModuleBase(const std::string &modName, HMODULE hModule);
-	MOD_INFO	getModuleInfo(const std::string &modName);
+	PBYTE		getModuleBase(const std::string& modName, HMODULE hModule);
+	MOD_INFO	getModuleInfo(const std::string& modName);
 	std::string getProcessExePath();
 
 	PBYTE	alloc(PBYTE addr, SIZE_T size);
@@ -40,7 +40,7 @@ public:
 	BOOL	read(PBYTE dst, PBYTE src, SIZE_T size);
 
 	VOID		AddMappedModule(MOD_INFO modInfo);
-	MOD_INFO	GetMappedModule(const std::string &name);
+	MOD_INFO	GetMappedModule(const std::string& name);
 
 	BOOL	isValid();
 	BOOL	isWow64Process();
