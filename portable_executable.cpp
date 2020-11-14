@@ -53,7 +53,7 @@ Image::Image(std::filesystem::path path)
 Image::Image(const std::vector<BYTE>& dllBytes)
 {
 	raw.reserve(dllBytes.size());
-	std::copy(dllBytes.begin(), dllBytes.end(), raw);
+	std::copy(dllBytes.begin(), dllBytes.end(), raw.data());
 
 	auto dos = reinterpret_cast<PIMAGE_DOS_HEADER>(raw.data());
 
