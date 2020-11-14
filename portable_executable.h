@@ -8,6 +8,8 @@ public:
 
 	Image(std::filesystem::path path);
 
+	Image(const std::vector<BYTE>& dllBytes);
+
 private:
 
 	std::vector<BYTE> raw;

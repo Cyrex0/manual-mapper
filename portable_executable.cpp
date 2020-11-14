@@ -43,10 +43,56 @@ Image::Image(std::filesystem::path path)
 	{
 		mapped.resize(nt32->OptionalHeader.SizeOfImage);
 	}
-	
+
 	dos->e_magic = nt->Signature = 0;
 	mapImage();
 	name = path.filename().string();
+	isValid = TRUE;
+}
+
+Image::Image(const std::vector<BYTE>& dllBytes)
+{
+	raw.reserve(dllBytes.size());
+	std::copy(dllBytes.begin(), dllBytes.end(), raw);
+
+	auto dos = reinterpret_cast<PIMAGE_DOS_HEADER>(raw.data());
+
+	if (!dos || dos->e_magic != IMAGE_DOS_SIGNATURE)
+	{
+		printf_s("[-] Inavlid dos signature\n");
+		return;
+	}
+
+	nt = reinterpret_cast<PIMAGE_NT_HEADERS>(raw.data() + dos->e_lfanew);
+
+	if (!nt || nt->Signature != IMAGE_NT_SIGNATURE)
+	{
+		printf_s("[-] Invalid nt signature\n");
+		return;
+	}
+
+	if (nt->OptionalHeader.Magic == IMAGE_NT_OPTIONAL_HDR32_MAGIC)
+	{
+		is64bits = FALSE;
+		nt32 = reinterpret_cast<PIMAGE_NT_HEADERS32>(nt);
+	}
+	else
+	{
+		is64bits = TRUE;
+	}
+
+	if (is64bits)
+	{
+		mapped.resize(nt->OptionalHeader.SizeOfImage);
+	}
+	else
+	{
+		mapped.resize(nt32->OptionalHeader.SizeOfImage);
+	}
+
+	dos->e_magic = nt->Signature = 0;
+	mapImage();
+	name = "";
 	isValid = TRUE;
 }
 
